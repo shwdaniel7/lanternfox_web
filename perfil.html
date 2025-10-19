@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Perfil - LanternFox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+<header class="main-header">
+    <div class="container header-container">
+        <a href="index.html" class="logo gradient-text">LanternFox</a>
+        
+        <!-- O menu de navegação principal -->
+        <nav class="main-nav" id="primary-navigation">
+            <ul class="nav-list">
+                <li><a href="index.html">LOJA</a></li>
+                <li><a href="marketplace.html">MARKETPLACE</a></li>
+                <li id="my-orders-li" style="display: none;"><a href="meus-pedidos.html">MEUS PEDIDOS</a></li>
+                <li id="my-ads-li" style="display: none;"><a href="meus-anuncios.html">MEUS ANÚNCIOS</a></li>
+            </ul>
+        </nav>
+
+        <!-- Grupo de ações do usuário (separado da navegação) -->
+        <div class="user-actions">
+            <a id="profile-link" href="perfil.html" style="display: none;" aria-label="Meu Perfil">
+                <i class="fas fa-user"></i>
+            </a>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Alternar tema">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+            </button>
+            <a href="carrinho.html" class="cart-link" aria-label="Ver carrinho de compras">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <span id="cart-count">0</span>
+            </a>
+            <div id="login-actions" style="display: flex; gap: 10px;">
+                <a href="login.html" id="login-link" class="button button-secondary">LOGIN</a>
+                <a href="login.html" id="register-link" class="button">CADASTRE-SE</a>
+            </div>
+            <div id="logout-actions" style="display: none;">
+                <button id="logout-button" class="button">SAIR</button>
+            </div>
+        </div>
+
+        <!-- O botão hambúrguer (visível apenas em mobile) -->
+        <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+            <span class="sr-only">Menu</span>
+        </button>
+    </div>
+    
+    <!-- A barra de busca continua aqui, fora do container principal do header -->
+    <div class="header-search-bar">
+        <div class="container">
+            <input type="text" id="search-input" placeholder="O que você está procurando?">
+            <select id="category-filter">
+                <option value="all">Todas as Categorias</option>
+                <option value="Processador">Processadores</option>
+                <option value="Placa de Vídeo">Placas de Vídeo</option>
+                <option value="Memória RAM">Memória RAM</option>
+                <option value="Periféricos">Periféricos</option>
+            </select>
+            <button id="search-button"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container">
+            <section class="products-section">
+                <h2 class="gradient-text">Meu Perfil</h2>
+        <div class="profile-layout">
+            <!-- Coluna de Visualização (AGORA SÓ COM VISUALIZAÇÃO) -->
+            <div class="profile-view">
+                <img id="profile-avatar-img" src="https://via.placeholder.com/150" alt="Avatar do usuário" class="profile-avatar">
+                <h3 id="profile-name-display">Carregando nome...</h3>
+                <p id="profile-email-display">Carregando e-mail...</p>
+            </div>
+        
+            <!-- Coluna de Edição -->
+            <div class="profile-edit">
+                <form id="profile-edit-form" class="form-layout">
+                    <h3>Editar Informações</h3>
+                    
+                    <label for="profile-name-input">Nome Completo</label>
+                    <input type="text" id="profile-name-input" required>
+                
+                    <!-- O CAMPO DE UPLOAD FOI MOVIDO PARA CÁ -->
+                    <label for="profile-avatar-upload">Alterar Avatar</label>
+                    <input type="file" id="profile-avatar-upload" accept="image/png, image/jpeg">
+                    
+                    <button type="submit" class="button">Salvar Alterações</button>
+                    <p id="form-message"></p>
+                </form>
+            </div>
+        </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

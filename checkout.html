@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LanternFox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+<header class="main-header">
+    <div class="container header-container">
+        <a href="index.html" class="logo"><img src="images/logo.png" alt="Ícone da LanternFox"><span class="logo-text gradient-text">LanternFox</span></a>
+        
+        <!-- O menu de navegação principal -->
+        <nav class="main-nav" id="primary-navigation">
+            <ul class="nav-list">
+                <li><a href="index.html">LOJA</a></li>
+                <li><a href="marketplace.html">MARKETPLACE</a></li>
+                <li id="my-orders-li" style="display: none;"><a href="meus-pedidos.html">MEUS PEDIDOS</a></li>
+                <li id="my-ads-li" style="display: none;"><a href="meus-anuncios.html">MEUS ANÚNCIOS</a></li>
+            </ul>
+        </nav>
+
+        <!-- Grupo de ações do usuário (separado da navegação) -->
+        <div class="user-actions">
+            <a id="profile-link" href="perfil.html" style="display: none;" aria-label="Meu Perfil">
+                <i class="fas fa-user"></i>
+            </a>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Alternar tema">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+            </button>
+            <a href="carrinho.html" class="cart-link" aria-label="Ver carrinho de compras">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                <span id="cart-count">0</span>
+            </a>
+            <div id="login-actions" style="display: flex; gap: 10px;">
+                <a href="login.html" id="login-link" class="button button-secondary">LOGIN</a>
+                <a href="login.html" id="register-link" class="button">CADASTRE-SE</a>
+            </div>
+            <div id="logout-actions" style="display: none;">
+                <button id="logout-button" class="button">SAIR</button>
+            </div>
+        </div>
+
+        <!-- O botão hambúrguer (visível apenas em mobile) -->
+        <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+            <span class="sr-only">Menu</span>
+        </button>
+    </div>
+    
+    <!-- A barra de busca continua aqui, fora do container principal do header -->
+    <div class="header-search-bar">
+        <div class="container">
+            <input type="text" id="search-input" placeholder="O que você está procurando?">
+            <select id="category-filter">
+                <option value="all">Todas as Categorias</option>
+                <option value="Processador">Processadores</option>
+                <option value="Placa de Vídeo">Placas de Vídeo</option>
+                <option value="Memória RAM">Memória RAM</option>
+                <option value="Periféricos">Periféricos</option>
+            </select>
+            <button id="search-button"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container">
+            <section class="products-section">
+                <h2 class="gradient-text">Finalizar Compra</h2>
+                <div class="checkout-layout">
+                    <!-- Coluna de Resumo -->
+                    <div id="checkout-summary" class="form-layout">
+                        <h3>Resumo do Pedido</h3>
+                        <!-- O resumo será preenchido pelo JS -->
+                        <p>Carregando...</p>
+                    </div>
+
+                    <!-- Coluna de Pagamento -->
+                    <div id="payment-options" class="form-layout">
+                        <h3>Método de Pagamento</h3>
+                        <p>Escolha como você gostaria de pagar (simulação).</p>
+                        <div class="payment-buttons">
+                            <button id="pay-with-card-btn" class="button">
+                                <i class="fas fa-credit-card"></i> Pagar com Cartão
+                            </button>
+                            <button id="pay-with-pix-btn" class="button button-secondary">
+                                <i class="fab fa-pix"></i> Pagar com Pix
+                            </button>
+                        </div>
+                        <div id="payment-feedback" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
