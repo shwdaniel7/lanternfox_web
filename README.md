@@ -64,4 +64,4 @@ O site serve como o portal principal da marca, permitindo aos usuários navegar 
 
 ## 👨‍💻 Autor
 
-- **[Daniel]** - [Seu GitHub](https://github.com/shwdaniel7)
+- **[Daniel]** - [shwdaniel7](https://github.com/shwdaniel7)
