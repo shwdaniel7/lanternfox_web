@@ -32,12 +32,12 @@ export function setupAuthEventListeners() {
     const logoutButton = document.getElementById('logout-button'); // O botão está aqui
     const messageEl = document.getElementById('message');
 
-const googleLoginBtn = document.getElementById('google-login-btn');
 googleLoginBtn?.addEventListener('click', async () => {
     const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: window.location.origin + '/web/index.html'
+            // USA A URL ATUAL DO SITE, SEJA LOCAL OU EM PRODUÇÃO
+            redirectTo: window.location.origin 
         }
     });
     if (error) {
