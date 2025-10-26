@@ -30,6 +30,7 @@ export function setupAuthEventListeners() {
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const logoutButton = document.getElementById('logout-button'); // O botão está aqui
+    const googleLoginBtn = document.getElementById('google-login-btn');
     const messageEl = document.getElementById('message');
 
 googleLoginBtn?.addEventListener('click', async () => {
@@ -86,5 +87,17 @@ googleLoginBtn?.addEventListener('click', async () => {
     logoutButton?.addEventListener('click', async () => {
         await supabase.auth.signOut();
         window.location.href = 'login.html';
+    });
+    
+    googleLoginBtn?.addEventListener('click', async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin
+            }
+        });
+        if (error) {
+            console.error('Erro no login com Google:', error);
+        }
     });
 }
