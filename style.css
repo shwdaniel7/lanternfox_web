@@ -1264,3 +1264,37 @@ html {
     }
 }
 
+/* --- Correções para o Marketplace --- */
+/* Sobrescreve as animações que podem estar causando problemas */
+.product-grid {
+    display: grid !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.product-grid .product-card-link,
+.product-grid .ad-card-link {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.ad-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.ad-card-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Garante que os grids funcionem corretamente */
+.product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 30px !important;
+}
+

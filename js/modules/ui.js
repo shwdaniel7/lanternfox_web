@@ -310,7 +310,7 @@ export function renderUserAds(adsListEl, ads) {
         const html = ads.map((ad, index) => {
             console.log('Renderizando anúncio:', ad.id);
             return `
-                <a href="anuncio.html?id=${ad.id}" class="ad-card-link" style="--i: ${index};">
+                <a href="anuncio.html?id=${ad.id}" class="ad-card-link visible" style="--i: ${index}; opacity: 1; transform: none;">
                     <div class="ad-card">
                         <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" 
                              alt="${ad.titulo}"
