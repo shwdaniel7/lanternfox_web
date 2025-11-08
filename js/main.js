@@ -153,8 +153,19 @@ if (path.endsWith('index.html') || path.endsWith('/')) {
     // Página do Marketplace
     else if (path.includes('marketplace.html')) {
         const adsListEl = document.getElementById('ads-list');
-        const { data, error } = await fetchAllUserAds();
-        if (data) renderUserAds(adsListEl, data);
+        try {
+            const { data, error } = await fetchAllUserAds();
+            if (error) throw error;
+            renderUserAds(adsListEl, data);
+        } catch (error) {
+            console.error('Erro ao carregar marketplace:', error);
+            if (adsListEl) {
+                adsListEl.innerHTML = `
+                    <p>Ocorreu um erro ao carregar os anúncios.</p>
+                    <button onclick="window.location.reload()" class="button">Tentar Novamente</button>
+                `;
+            }
+        }
         setupSearchAndFilters('marketplace');
     }
     // Página Meus Anúncios

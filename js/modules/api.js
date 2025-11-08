@@ -93,7 +93,32 @@ export async function fetchProductsByIds(ids) {
 }
 
 
+// Função de diagnóstico para verificar o estado da conexão
+async function checkSupabaseConnection() {
+    try {
+        const { data, error } = await supabase.from('anuncios_usuarios').select('count', { count: 'exact' });
+        if (error) {
+            console.error('Erro de conexão com Supabase:', error);
+            return false;
+        }
+        return true;
+    } catch (e) {
+        console.error('Erro ao verificar conexão:', e);
+        return false;
+    }
+}
+
 export async function fetchAllUserAds(searchTerm = '', category = 'all') {
+    // Verifica a conexão antes de fazer a consulta
+    const isConnected = await checkSupabaseConnection();
+    if (!isConnected) {
+        // Se a conexão falhar, tenta reconectar
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Espera 1 segundo
+        if (!(await checkSupabaseConnection())) {
+            throw new Error('Não foi possível estabelecer conexão com o banco de dados');
+        }
+    }
+
     let query = supabase.from('anuncios_usuarios').select('*, profiles ( full_name )');
 
     // Filtro por nome (busca textual)
@@ -106,9 +131,16 @@ export async function fetchAllUserAds(searchTerm = '', category = 'all') {
         query = query.eq('categoria', category);
     }
 
-    return await query
+    const { data, error } = await query
         .eq('status', 'disponivel')
         .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Erro ao buscar anúncios:', error);
+        throw error;
+    }
+
+    return { data, error };
 }
 
 export async function fetchMyAds(userId) {

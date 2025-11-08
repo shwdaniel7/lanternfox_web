@@ -279,22 +279,40 @@ export function renderOrders(containerEl, orders) {
 
 export function renderUserAds(adsListEl, ads) {
     if (!adsListEl) return;
+
+    // Primeiro limpa o conteúdo anterior e mostra mensagem de carregamento
+    adsListEl.innerHTML = "<p>Carregando anúncios...</p>";
+
+    // Verifica se ads é undefined ou null
+    if (!ads) {
+        adsListEl.innerHTML = "<p>Erro ao carregar os anúncios. Tente recarregar a página.</p>";
+        return;
+    }
+
+    // Verifica se não há anúncios
     if (ads.length === 0) {
         adsListEl.innerHTML = "<p>Nenhum anúncio encontrado no momento.</p>";
         return;
     }
-    adsListEl.innerHTML = ads.map((ad, index) => `
-        <a href="anuncio.html?id=${ad.id}" class="ad-card-link" style="--i: ${index};">
-            <div class="ad-card">
-                <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" alt="${ad.titulo}">
-                <div class="ad-card-content">
-                    <h3>${ad.titulo}</h3>
-                    <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
-                    <p class="ad-author">Anunciado por: <strong>${ad.profiles.full_name || 'Usuário'}</strong></p>
+
+    // Renderiza os anúncios
+    try {
+        adsListEl.innerHTML = ads.map((ad, index) => `
+            <a href="anuncio.html?id=${ad.id}" class="ad-card-link" style="--i: ${index};">
+                <div class="ad-card">
+                    <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" alt="${ad.titulo}">
+                    <div class="ad-card-content">
+                        <h3>${ad.titulo}</h3>
+                        <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
+                        <p class="ad-author">Anunciado por: <strong>${ad.profiles?.full_name || 'Usuário'}</strong></p>
+                    </div>
                 </div>
-            </div>
-        </a>
-    `).join('');
+            </a>
+        `).join('');
+    } catch (error) {
+        console.error('Erro ao renderizar anúncios:', error);
+        adsListEl.innerHTML = "<p>Erro ao exibir os anúncios. Tente recarregar a página.</p>";
+    }
 }
 
 export function renderMyAds(adsListEl, ads) {
