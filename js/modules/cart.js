@@ -13,7 +13,8 @@ export function saveCart(cartObject) {
 
 export function addToCart(itemDetails) {
     const cart = getCart();
-    const itemType = itemDetails.type || 'loja';
+    // Determina o tipo com base na existência de campos específicos
+    const itemType = itemDetails.type || (itemDetails.titulo ? 'marketplace' : 'loja');
     const uniqueId = `${itemType}-${itemDetails.id}`;
 
     const existingItem = cart.items.find(item => item.uniqueId === uniqueId);

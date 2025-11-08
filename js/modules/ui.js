@@ -124,12 +124,13 @@ export async function renderCartPage(listEl, totalEl, apiFetchers) {
         } else {
             details = ads.find(a => a.id === item.id);
         }
-        const combinedItem = { ...details, ...item };
+        // Garantir que não sobrescrevemos a URL da imagem com o item do carrinho
+        const combinedItem = { ...item, ...details };
         return {
             ...combinedItem,
             nome: combinedItem.name || combinedItem.nome || combinedItem.titulo,
             preco: combinedItem.price,
-            imagem_url: combinedItem.imagem_url || 'https://via.placeholder.com/100'
+            imagem_url: details?.imagem_url || 'https://via.placeholder.com/100'
         };
     });
 
@@ -350,9 +351,10 @@ export function renderAdDetails(containerEl, ad) {
         </div>
     `;
 
-    // GARANTA QUE ESTE BLOCO ESTEJA USANDO 'ad'
+    // GARANTA QUE ESTE BLOCO ESTEJA USANDO 'ad' e defina o tipo como marketplace
     document.getElementById('add-ad-to-cart-btn').addEventListener('click', () => {
-        addToCart(ad);
+        const adWithType = { ...ad, type: 'marketplace' };
+        addToCart(adWithType);
     });
 }
 
