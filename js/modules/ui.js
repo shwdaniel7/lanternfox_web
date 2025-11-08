@@ -278,37 +278,58 @@ export function renderOrders(containerEl, orders) {
 }
 
 export function renderUserAds(adsListEl, ads) {
-    if (!adsListEl) return;
+    console.log('Iniciando renderUserAds', { adsListEl: !!adsListEl, ads: ads });
+
+    if (!adsListEl) {
+        console.error('adsListEl não encontrado');
+        return;
+    }
 
     // Primeiro limpa o conteúdo anterior e mostra mensagem de carregamento
     adsListEl.innerHTML = "<p>Carregando anúncios...</p>";
 
     // Verifica se ads é undefined ou null
     if (!ads) {
+        console.error('ads é null ou undefined');
         adsListEl.innerHTML = "<p>Erro ao carregar os anúncios. Tente recarregar a página.</p>";
         return;
     }
 
     // Verifica se não há anúncios
     if (ads.length === 0) {
+        console.log('Nenhum anúncio encontrado');
         adsListEl.innerHTML = "<p>Nenhum anúncio encontrado no momento.</p>";
         return;
     }
 
+    console.log(`Preparando para renderizar ${ads.length} anúncios`);
+
     // Renderiza os anúncios
     try {
-        adsListEl.innerHTML = ads.map((ad, index) => `
-            <a href="anuncio.html?id=${ad.id}" class="ad-card-link" style="--i: ${index};">
-                <div class="ad-card">
-                    <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" alt="${ad.titulo}">
-                    <div class="ad-card-content">
-                        <h3>${ad.titulo}</h3>
-                        <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
-                        <p class="ad-author">Anunciado por: <strong>${ad.profiles?.full_name || 'Usuário'}</strong></p>
+        // Cria o HTML primeiro sem atribuir ao DOM
+        const html = ads.map((ad, index) => {
+            console.log('Renderizando anúncio:', ad.id);
+            return `
+                <a href="anuncio.html?id=${ad.id}" class="ad-card-link" style="--i: ${index};">
+                    <div class="ad-card">
+                        <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" 
+                             alt="${ad.titulo}"
+                             loading="lazy">
+                        <div class="ad-card-content">
+                            <h3>${ad.titulo}</h3>
+                            <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
+                            <p class="ad-author">Anunciado por: <strong>${ad.profiles?.full_name || 'Usuário'}</strong></p>
+                        </div>
                     </div>
-                </div>
-            </a>
-        `).join('');
+                </a>
+            `;
+        }).join('');
+
+        // Atualiza o DOM de uma vez só
+        requestAnimationFrame(() => {
+            adsListEl.innerHTML = html;
+            console.log('Renderização concluída');
+        });
     } catch (error) {
         console.error('Erro ao renderizar anúncios:', error);
         adsListEl.innerHTML = "<p>Erro ao exibir os anúncios. Tente recarregar a página.</p>";

@@ -72,12 +72,16 @@
         <div class="container">
             <section class="products-section">
                 <h2>Anúncios da Comunidade</h2>
-                <div id="ads-list" class="product-grid">
-                    <!-- Anúncios dos usuários serão inseridos aqui -->
+                <div id="ads-list" class="product-grid" data-testid="marketplace-grid">
+                    <p>Carregando anúncios...</p>
                 </div>
             </section>
         </div>
     </main>
+    <!-- Script para verificar se o elemento foi criado corretamente -->
+    <script>
+        console.log('Elemento ads-list presente:', !!document.getElementById('ads-list'));
+    </script>
     <div id="toast-container"></div>
     <script type="module" src="js/main.js"></script>
 </body>
