@@ -315,15 +315,15 @@ export function renderUserAds(adsListEl, ads) {
 
     console.log(`Preparando para renderizar ${ads.length} anúncios`);
 
-    // Remove todas as classes existentes e adiciona apenas o necessário
-    adsListEl.className = 'ads-container';
-    
-    // Aplica estilos básicos diretamente
-    adsListEl.style.display = 'flex';
-    adsListEl.style.flexWrap = 'wrap';
-    adsListEl.style.gap = '20px';
-    adsListEl.style.padding = '20px';
-    adsListEl.style.justifyContent = 'center';
+    // Aplica o estilo do grid
+    adsListEl.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        width: 100%;
+        justify-content: center;
+        align-items: stretch;
+    `;
 
     try {
         // Cria e adiciona os elementos um por um
@@ -333,44 +333,84 @@ export function renderUserAds(adsListEl, ads) {
             // Cria os elementos
             const cardLink = document.createElement('a');
             cardLink.href = `anuncio.html?id=${ad.id}`;
-            cardLink.style.textDecoration = 'none';
-            cardLink.style.color = 'inherit';
-            cardLink.style.width = '280px';
-            cardLink.style.margin = '10px';
+            cardLink.style.cssText = `
+                text-decoration: none;
+                color: inherit;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                display: block;
+                width: 100%;
+            `;
+
+            // Adiciona evento de hover
+            cardLink.addEventListener('mouseenter', () => {
+                cardLink.style.transform = 'translateY(-5px)';
+                cardLink.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+            });
+            cardLink.addEventListener('mouseleave', () => {
+                cardLink.style.transform = 'translateY(0)';
+                cardLink.style.boxShadow = 'none';
+            });
 
             const card = document.createElement('div');
-            card.style.backgroundColor = '#ffffff';
-            card.style.borderRadius = '8px';
-            card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-            card.style.overflow = 'hidden';
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            card.style.cssText = `
+                border-radius: 8px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background-color: ${isDarkTheme ? 'rgba(30, 30, 30, 0.6)' : 'var(--surface-color)'};
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid ${isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'var(--border-color)'};
+            `;
 
             // Imagem
             const img = document.createElement('img');
             img.src = ad.imagem_url || 'https://via.placeholder.com/250';
             img.alt = ad.titulo;
-            img.style.width = '100%';
-            img.style.height = '200px';
-            img.style.objectFit = 'cover';
+            img.style.cssText = `
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                display: block;
+            `;
 
             // Conteúdo
             const content = document.createElement('div');
-            content.style.padding = '15px';
+            content.style.cssText = `
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            `;
 
             const title = document.createElement('h3');
             title.textContent = ad.titulo;
-            title.style.marginBottom = '10px';
+            title.style.cssText = `
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                color: var(--text-color);
+            `;
 
             const price = document.createElement('p');
             price.textContent = `R$ ${Number(ad.preco_sugerido).toFixed(2)}`;
-            price.style.fontSize = '1.2em';
-            price.style.fontWeight = 'bold';
-            price.style.color = '#f39c12';
+            price.style.cssText = `
+                font-size: 1.3em;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 15px;
+            `;
 
             const author = document.createElement('p');
             author.textContent = `Anunciado por: ${ad.profiles?.full_name || 'Usuário'}`;
-            author.style.fontSize = '0.9em';
-            author.style.color = '#666';
-            author.style.marginTop = '10px';
+            author.style.cssText = `
+                font-size: 0.9em;
+                color: var(--text-secondary-color);
+                margin-top: auto;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color);
+            `;
 
             // Monta a estrutura
             content.appendChild(title);
