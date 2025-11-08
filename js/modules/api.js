@@ -57,9 +57,43 @@ export async function createOrder(userId, cart) {
         throw new Error('Valor total inválido (NaN).');
     }
 
+    // Prepara o metadata com informações de frete e trade-in
+    const shippingData = localStorage.getItem('shippingAddress');
+    const metadata = {};
+
+    if (shippingData) {
+        try {
+            const address = JSON.parse(shippingData);
+            metadata.shipping = {
+                service: address.shipping.service,
+                cost: address.shipping.cost,
+                days: address.shipping.days,
+                address: {
+                    cep: address.cep,
+                    street: address.street,
+                    neighborhood: address.neighborhood,
+                    city: address.city,
+                    state: address.state
+                }
+            };
+        } catch (e) {
+            console.error('Erro ao processar dados de frete:', e);
+        }
+    }
+
+    if (cart.tradeIn) {
+        metadata.tradeInDiscount = cart.tradeIn.discount;
+        metadata.tradeInAdId = cart.tradeIn.adId;
+        metadata.tradeInAdTitle = cart.tradeIn.adTitle;
+    }
+
     const { data: pedidoData, error: pedidoError } = await supabase
         .from('pedidos')
-        .insert({ usuario_id: userId, valor_total: valor_total })
+        .insert({ 
+            usuario_id: userId, 
+            valor_total: valor_total,
+            metadata: metadata
+        })
         .select().single();
 
     if (pedidoError) throw pedidoError;

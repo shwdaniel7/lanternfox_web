@@ -70,6 +70,15 @@ export function renderProductDetails(containerEl, product) {
                 <div class="product-purchase-card">
                     ${priceHTML}
                     <p class="stock-info">Em estoque: ${product.estoque} unidades</p>
+                    <div class="shipping-calculator-section">
+                        <h4>Calcular Frete</h4>
+                        <div class="shipping-input">
+                            <input type="text" id="shipping-cep" placeholder="Digite seu CEP" maxlength="9" class="shipping-cep-input">
+                            <button id="calculate-shipping" class="button button-secondary">Calcular</button>
+                        </div>
+                        <div id="shipping-result" class="shipping-result"></div>
+                        <small><a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" rel="noopener">Não sei meu CEP</a></small>
+                    </div>
                     <div class="purchase-actions">
                         ${actionsHTML}
                     </div>
@@ -83,9 +92,118 @@ export function renderProductDetails(containerEl, product) {
         </div>
     `;
 
-    document.getElementById('add-to-cart-detail-btn').addEventListener('click', () => {
-        addToCart(product);
-    });
+    const addToCartBtn = document.getElementById('add-to-cart-detail-btn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', () => {
+            addToCart(product);
+        });
+    }
+
+    // Inicializa a calculadora de frete
+    const calculateBtn = document.getElementById('calculate-shipping');
+    const cepInput = document.getElementById('shipping-cep');
+    const resultDiv = document.getElementById('shipping-result');
+
+    if (calculateBtn && cepInput && resultDiv) {
+        console.log('Inicializando calculadora de frete...');
+
+        // Formata o CEP enquanto digita
+        cepInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 5) {
+                value = value.replace(/^(\d{5})(\d{0,3}).*/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+
+        // Calcula o frete quando clicar no botão
+        calculateBtn.addEventListener('click', async () => {
+            console.log('Calculando frete...');
+            const cep = cepInput.value.replace(/\D/g, '');
+            
+            if (cep.length !== 8) {
+                resultDiv.innerHTML = '<p class="error-message">CEP inválido. Digite um CEP válido.</p>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                calculateBtn.disabled = true;
+                calculateBtn.textContent = 'Calculando...';
+                resultDiv.innerHTML = '<p class="loading-message">Calculando frete...</p>';
+                resultDiv.style.display = 'block';
+                
+                // Busca o endereço primeiro
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+                
+                if (data.erro) {
+                    throw new Error('CEP não encontrado');
+                }
+
+                // Simula o cálculo do frete (1% do valor do produto + valor base + distância)
+                const price = product.em_promocao ? product.preco_promocional : product.preco;
+                const baseShipping = Math.max(15, price * 0.01); // Mínimo de R$ 15,00
+                const region = cep.substring(0, 2);
+                const multiplier = region === '01' ? 1.0 : // São Paulo
+                                 region === '20' ? 1.2 : // Rio de Janeiro
+                                 region === '30' ? 1.3 : // Minas Gerais
+                                 1.5; // Outros estados
+                const shippingCost = baseShipping * multiplier;
+                const days = Math.round(3 + (multiplier * 2));
+
+                // Mostra o resultado
+                resultDiv.innerHTML = `
+                    <div class="shipping-option">
+                        <div class="shipping-info">
+                            <div class="service-name">PAC</div>
+                            <div class="delivery-time">Entrega em até ${days} dias úteis</div>
+                            <div class="delivery-address">
+                                ${data.logradouro ? `${data.logradouro}, ` : ''}
+                                ${data.bairro ? `${data.bairro}, ` : ''}
+                                ${data.localidade} - ${data.uf}
+                            </div>
+                        </div>
+                        <div class="shipping-price">R$ ${shippingCost.toFixed(2)}</div>
+                    </div>
+                `;
+
+                // Salva o endereço para usar no checkout
+                const shippingData = {
+                    cep: data.cep,
+                    street: data.logradouro,
+                    neighborhood: data.bairro,
+                    city: data.localidade,
+                    state: data.uf,
+                    shipping: {
+                        cost: shippingCost,
+                        days: days,
+                        service: 'PAC',
+                        address: {
+                            street: data.logradouro,
+                            city: data.localidade,
+                            state: data.uf
+                        }
+                    }
+                };
+                localStorage.setItem('shippingAddress', JSON.stringify(shippingData));
+
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: var(--error-color);">${error.message || 'Erro ao calcular o frete.'}</p>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                calculateBtn.disabled = false;
+                calculateBtn.textContent = 'Calcular';
+            }
+        });
+
+        // Permite calcular apertando Enter
+        cepInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculateBtn.click();
+            }
+        });
+    }
 }
 
 // Renderiza a página completa do carrinho (com busca de dados)
@@ -178,6 +296,28 @@ export async function renderCartPage(listEl, totalEl, apiFetchers) {
         // Adiciona a linha de subtotal
         summaryContent.innerHTML += `<p>Subtotal: <strong>R$ ${subtotal.toFixed(2)}</strong></p>`;
 
+        // Adiciona a linha de frete se houver endereço salvo
+        const savedAddress = localStorage.getItem('shippingAddress');
+        if (savedAddress) {
+            try {
+                const address = JSON.parse(savedAddress);
+                if (address.shipping && address.shipping.cost) {
+                    total += address.shipping.cost;
+                    summaryContent.innerHTML += `
+                        <div class="shipping-info">
+                            <p>Frete (${address.shipping.service}):</p>
+                            <strong>+ R$ ${address.shipping.cost.toFixed(2)}</strong>
+                            <small>Entrega em até ${address.shipping.days} dias úteis</small>
+                            <br>
+                            <small>Para: ${address.street}, ${address.city}/${address.state}</small>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error('Erro ao processar endereço salvo:', e);
+            }
+        }
+
         // Adiciona a linha de desconto se houver um item de troca
         if (cart.tradeIn) {
             total -= cart.tradeIn.discount;
@@ -209,21 +349,120 @@ export async function renderCartPage(listEl, totalEl, apiFetchers) {
 export function renderOrders(containerEl, orders) {
     if (!containerEl) return;
 
-    if (orders.length === 0) {
+    if (!orders || orders.length === 0) {
         containerEl.innerHTML = '<p>Você ainda não fez nenhum pedido.</p>';
         return;
     }
 
-    containerEl.innerHTML = orders.map(order => `
+    console.log('Renderizando pedidos:', orders);
+
+    // Função auxiliar para formatar valores monetários
+    const formatMoney = (value) => Number(value).toFixed(2);
+
+    const renderOrderItem = (item) => {
+        const isFromStore = item.produtos_loja !== null;
+        const details = isFromStore ? item.produtos_loja : item.anuncios_usuarios;
+
+        if (!details) {
+            return `
+            <div class="cart-table-row" style="padding-left: 0; padding-right: 0;">
+                <div class="product-col">
+                    <img src="https://via.placeholder.com/100" alt="Item indisponível">
+                    <div class="product-info">
+                        <p><strong>Item não mais disponível</strong></p>
+                    </div>
+                </div>
+                <div>-</div>
+                <div style="text-align: center;">${item.quantidade}</div>
+                <div>-</div>
+            </div>`;
+        }
+        
+        const name = isFromStore ? details.nome : details.titulo;
+        
+        return `
+        <div class="cart-table-row" style="padding-left: 0; padding-right: 0;">
+            <div class="product-col">
+                <img src="${details.imagem_url || 'https://via.placeholder.com/100'}" alt="${name}">
+                <div class="product-info">
+                    <p><strong>${name}</strong></p>
+                </div>
+            </div>
+            <div>R$ ${formatMoney(item.preco_unitario)}</div>
+            <div style="text-align: center;">${item.quantidade}</div>
+            <div><strong>R$ ${formatMoney(item.quantidade * item.preco_unitario)}</strong></div>
+        </div>`;
+    };
+
+    containerEl.innerHTML = orders.map(order => {
+        // Calcula o subtotal dos itens
+        const subtotal = order.itens_pedido.reduce((sum, item) => 
+            sum + (item.quantidade * item.preco_unitario), 0
+        );
+
+        // Tenta extrair metadata
+        let metadata = {};
+        try {
+            if (order.metadata) {
+                metadata = JSON.parse(order.metadata);
+                console.log('Metadata do pedido:', metadata);
+            } else {
+                console.log('Pedido sem metadata');
+            }
+        } catch (e) {
+            console.error('Erro ao parsear metadata do pedido:', e);
+        }
+
+        // Calcula o total incluindo frete e descontos
+        const shippingCost = metadata.shippingOption ? metadata.shippingOption.price : 0;
+        const tradeInDiscount = metadata.tradeInDiscount || 0;
+        const totalWithShipping = subtotal + shippingCost - tradeInDiscount;
+
+        return `
         <div class="order-card">
             <div class="order-header">
-                <div>
+                <div class="order-header-info">
                     <h3>Pedido #${order.id}</h3>
                     <p class="order-date">Realizado em: ${new Date(order.created_at).toLocaleDateString('pt-BR')}</p>
                 </div>
-                <div class="order-total">
-                    <span>Total do Pedido</span>
-                    <strong>R$ ${Number(order.valor_total).toFixed(2)}</strong>
+                <div class="order-summary">
+                    <div class="order-summary-item">
+                        <p class="subtotal">
+                            <span>Subtotal dos Produtos:</span>
+                            <strong>R$ ${formatMoney(subtotal)}</strong>
+                        </p>
+                    </div>
+                    ${metadata.shippingOption ? `
+                        <div class="order-summary-item shipping-info">
+                            <p>
+                                <span>Frete (${metadata.shippingOption.name}):</span>
+                                <strong>+ R$ ${formatMoney(metadata.shippingOption.price)}</strong>
+                            </p>
+                            <div class="shipping-details">
+                                <small>Entrega em até ${metadata.shippingOption.days || '15'} dias úteis</small>
+                                ${metadata.shippingAddress ? `
+                                    <small class="shipping-address">
+                                        Para: ${metadata.shippingAddress.street}, ${metadata.shippingAddress.number}
+                                        ${metadata.shippingAddress.city}/${metadata.shippingAddress.state}
+                                    </small>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${metadata.tradeInDiscount ? `
+                        <p class="trade-in-info">
+                            <span>Desconto Trade-in:</span>
+                            <strong>- R$ ${formatMoney(metadata.tradeInDiscount)}</strong>
+                            ${metadata.tradeInAdTitle ? `
+                                <br>
+                                <small>Item: ${metadata.tradeInAdTitle}</small>
+                            ` : ''}
+                        </p>
+                    ` : ''}
+                    <p class="order-total">
+                        <span>Total do Pedido:</span>
+                        <strong>R$ ${formatMoney(totalWithShipping)}</strong>
+                    </p>
                 </div>
             </div>
             
@@ -234,47 +473,11 @@ export function renderOrders(containerEl, orders) {
                     <div class="header-item">Qtd.</div>
                     <div class="header-item">Subtotal</div>
                 </div>
-                ${order.itens_pedido.map(item => {
-                    const isFromStore = item.produtos_loja !== null;
-                    const details = isFromStore ? item.produtos_loja : item.anuncios_usuarios;
-
-                    // Se o produto/anúncio foi deletado, 'details' será null.
-                    // Precisamos tratar esse caso para não quebrar a página.
-                    if (!details) {
-                        return `
-                        <div class="cart-table-row" style="padding-left: 0; padding-right: 0;">
-                            <div class="product-col">
-                                <img src="https://via.placeholder.com/100" alt="Item indisponível">
-                                <div class="product-info">
-                                    <p><strong>Item não mais disponível</strong></p>
-                                </div>
-                            </div>
-                            <div>-</div>
-                            <div style="text-align: center;">${item.quantidade}</div>
-                            <div>-</div>
-                        </div>
-                        `;
-                    }
-                    
-                    const name = isFromStore ? details.nome : details.titulo;
-                    
-                    return `
-                    <div class="cart-table-row" style="padding-left: 0; padding-right: 0;">
-                        <div class="product-col">
-                            <img src="${details.imagem_url || 'https://via.placeholder.com/100'}" alt="${name}">
-                            <div class="product-info">
-                                <p><strong>${name}</strong></p>
-                            </div>
-                        </div>
-                        <div>R$ ${Number(item.preco_unitario).toFixed(2)}</div>
-                        <div style="text-align: center;">${item.quantidade}</div>
-                        <div><strong>R$ ${(item.quantidade * item.preco_unitario).toFixed(2)}</strong></div>
-                    </div>
-                    `;
-                }).join('')}
+                ${order.itens_pedido.map(item => renderOrderItem(item)).join('')}
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 export function renderUserAds(adsListEl, ads) {

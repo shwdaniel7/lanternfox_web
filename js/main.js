@@ -366,6 +366,7 @@ else if (path.includes('checkout.html')) {
         return;
     }
     renderCheckoutSummary();
+    setupShippingListeners();
     setupPaymentListeners(session.user.id);
 }
 
@@ -704,6 +705,28 @@ function renderCheckoutSummary() {
         <p><span>Subtotal:</span> <strong>R$ ${subtotal.toFixed(2)}</strong></p>
     `;
 
+    // Adiciona o frete se houver
+    const savedAddress = localStorage.getItem('shippingAddress');
+    if (savedAddress) {
+        try {
+            const address = JSON.parse(savedAddress);
+            if (address.shipping && address.shipping.cost) {
+                total += address.shipping.cost;
+                summaryHTML += `
+                    <p class="shipping-info">
+                        <span>Frete (${address.shipping.service}):</span> 
+                        <strong>+ R$ ${address.shipping.cost.toFixed(2)}</strong><br>
+                        <small>Entrega em até ${address.shipping.days} dias úteis<br>
+                        ${address.street ? `Para: ${address.street}` : ''} 
+                        ${address.city ? `- ${address.city}/${address.state}` : ''}</small>
+                    </p>
+                `;
+            }
+        } catch (e) {
+            console.error('Erro ao processar endereço salvo:', e);
+        }
+    }
+
     if (cart.tradeIn) {
         total -= cart.tradeIn.discount;
         summaryHTML += `
@@ -720,6 +743,93 @@ function renderCheckoutSummary() {
     `;
 
     summaryEl.innerHTML = summaryHTML;
+}
+
+function setupShippingListeners() {
+    const cepInput = document.getElementById('shipping-cep');
+    const fetchBtn = document.getElementById('fetch-address');
+    const streetInput = document.getElementById('shipping-street');
+    const numberInput = document.getElementById('shipping-number');
+    const complementInput = document.getElementById('shipping-complement');
+    const neighborhoodInput = document.getElementById('shipping-neighborhood');
+    const cityInput = document.getElementById('shipping-city');
+    const stateInput = document.getElementById('shipping-state');
+
+    if (!cepInput || !fetchBtn) return;
+
+    // Carrega endereço salvo, se existir
+    const savedAddress = localStorage.getItem('shippingAddress');
+    if (savedAddress) {
+        const address = JSON.parse(savedAddress);
+        cepInput.value = address.cep;
+        streetInput.value = address.street || '';
+        neighborhoodInput.value = address.neighborhood || '';
+        cityInput.value = address.city || '';
+        stateInput.value = address.state || '';
+    }
+
+    // Formata o CEP enquanto digita
+    cepInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = value.replace(/^(\d{5})(\d{0,3}).*/, '$1-$2');
+        }
+        e.target.value = value;
+    });
+
+    // Busca endereço quando clicar no botão
+    fetchBtn.addEventListener('click', async () => {
+        const cep = cepInput.value.replace(/\D/g, '');
+        
+        if (cep.length !== 8) {
+            alert('CEP inválido. Digite um CEP válido.');
+            return;
+        }
+
+        try {
+            fetchBtn.disabled = true;
+            fetchBtn.textContent = 'Buscando...';
+            
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+            
+            if (data.erro) {
+                throw new Error('CEP não encontrado');
+            }
+
+            // Preenche os campos
+            streetInput.value = data.logradouro;
+            neighborhoodInput.value = data.bairro;
+            cityInput.value = data.localidade;
+            stateInput.value = data.uf;
+
+            // Habilita/desabilita campos apropriadamente
+            numberInput.disabled = false;
+            complementInput.disabled = false;
+
+            // Salva o endereço
+            localStorage.setItem('shippingAddress', JSON.stringify({
+                cep: data.cep,
+                street: data.logradouro,
+                neighborhood: data.bairro,
+                city: data.localidade,
+                state: data.uf
+            }));
+
+        } catch (error) {
+            alert(error.message || 'Erro ao buscar endereço');
+        } finally {
+            fetchBtn.disabled = false;
+            fetchBtn.textContent = 'Buscar';
+        }
+    });
+
+    // Permite buscar apertando Enter
+    cepInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            fetchBtn.click();
+        }
+    });
 }
 
 function setupPaymentListeners(userId) {

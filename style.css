@@ -1241,6 +1241,120 @@ html {
     margin-right: 10px;
 }
 
+/* Estilos para calculadora de frete */
+.shipping-calculator {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+}
+
+.shipping-calculator h4 {
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.shipping-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.shipping-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--surface-color);
+    color: var(--text-color);
+}
+
+.shipping-calculator small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.8em;
+    color: var(--text-secondary-color);
+}
+
+.shipping-calculator small a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+#shipping-result {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: var(--surface-color);
+    display: none;
+}
+
+#shipping-result.active {
+    display: block;
+}
+
+.shipping-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.shipping-option:last-child {
+    border-bottom: none;
+}
+
+.shipping-option .service-name {
+    font-weight: 600;
+}
+
+.shipping-option .delivery-time {
+    font-size: 0.9em;
+    color: var(--text-secondary-color);
+}
+
+.shipping-option .price {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Estilos para o endereço de entrega no checkout */
+.shipping-address {
+    margin-bottom: 30px;
+}
+
+.shipping-address-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.shipping-address-form .full-width {
+    grid-column: 1 / -1;
+}
+
+.address-preview {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+}
+
+.address-preview h4 {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address-preview button {
+    font-size: 0.9em;
+    padding: 4px 8px;
+}
+
 .success-container {
     text-align: center;
     padding: 80px 0;

@@ -70,11 +70,31 @@
             <section class="products-section">
                 <h2 class="gradient-text">Finalizar Compra</h2>
                 <div class="checkout-layout">
-                    <!-- Coluna de Resumo -->
-                    <div id="checkout-summary" class="form-layout">
-                        <h3>Resumo do Pedido</h3>
-                        <!-- O resumo será preenchido pelo JS -->
-                        <p>Carregando...</p>
+                    <!-- Coluna de Endereço e Resumo -->
+                    <div>
+                        <!-- Seção de Endereço -->
+                        <div id="shipping-address" class="form-layout shipping-address">
+                            <h3>Endereço de Entrega</h3>
+                            <div id="address-form" class="shipping-address-form">
+                                <div class="full-width">
+                                    <input type="text" id="shipping-cep" placeholder="CEP" maxlength="9">
+                                    <button id="fetch-address" class="button button-secondary">Buscar</button>
+                                </div>
+                                <input type="text" id="shipping-street" placeholder="Rua" disabled>
+                                <input type="text" id="shipping-number" placeholder="Número">
+                                <input type="text" id="shipping-complement" placeholder="Complemento (opcional)">
+                                <input type="text" id="shipping-neighborhood" placeholder="Bairro" disabled>
+                                <input type="text" id="shipping-city" placeholder="Cidade" disabled>
+                                <input type="text" id="shipping-state" placeholder="Estado" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Resumo do Pedido -->
+                        <div id="checkout-summary" class="form-layout">
+                            <h3>Resumo do Pedido</h3>
+                            <!-- O resumo será preenchido pelo JS -->
+                            <p>Carregando...</p>
+                        </div>
                     </div>
 
                     <!-- Coluna de Pagamento -->
