@@ -285,54 +285,118 @@ export function renderUserAds(adsListEl, ads) {
         return;
     }
 
-    // Primeiro limpa o conteúdo anterior e mostra mensagem de carregamento
-    adsListEl.innerHTML = "<p>Carregando anúncios...</p>";
+    // Debug: Verifica o estado atual do elemento
+    console.log('Estado do elemento antes da renderização:', {
+        display: window.getComputedStyle(adsListEl).display,
+        visibility: window.getComputedStyle(adsListEl).visibility,
+        opacity: window.getComputedStyle(adsListEl).opacity
+    });
+
+    // Primeiro limpa o conteúdo anterior
+    adsListEl.textContent = '';  // Usa textContent em vez de innerHTML para limpar
 
     // Verifica se ads é undefined ou null
     if (!ads) {
         console.error('ads é null ou undefined');
-        adsListEl.innerHTML = "<p>Erro ao carregar os anúncios. Tente recarregar a página.</p>";
+        const errorP = document.createElement('p');
+        errorP.textContent = 'Erro ao carregar os anúncios. Tente recarregar a página.';
+        adsListEl.appendChild(errorP);
         return;
     }
 
     // Verifica se não há anúncios
     if (ads.length === 0) {
         console.log('Nenhum anúncio encontrado');
-        adsListEl.innerHTML = "<p>Nenhum anúncio encontrado no momento.</p>";
+        const emptyP = document.createElement('p');
+        emptyP.textContent = 'Nenhum anúncio encontrado no momento.';
+        adsListEl.appendChild(emptyP);
         return;
     }
 
     console.log(`Preparando para renderizar ${ads.length} anúncios`);
 
-    // Renderiza os anúncios
-    try {
-        // Cria o HTML primeiro sem atribuir ao DOM
-        const html = ads.map((ad, index) => {
-            console.log('Renderizando anúncio:', ad.id);
-            return `
-                <a href="anuncio.html?id=${ad.id}" class="ad-card-link visible" style="--i: ${index}; opacity: 1; transform: none;">
-                    <div class="ad-card">
-                        <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" 
-                             alt="${ad.titulo}"
-                             loading="lazy">
-                        <div class="ad-card-content">
-                            <h3>${ad.titulo}</h3>
-                            <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
-                            <p class="ad-author">Anunciado por: <strong>${ad.profiles?.full_name || 'Usuário'}</strong></p>
-                        </div>
-                    </div>
-                </a>
-            `;
-        }).join('');
+    // Remove todas as classes existentes e adiciona apenas o necessário
+    adsListEl.className = 'ads-container';
+    
+    // Aplica estilos básicos diretamente
+    adsListEl.style.display = 'flex';
+    adsListEl.style.flexWrap = 'wrap';
+    adsListEl.style.gap = '20px';
+    adsListEl.style.padding = '20px';
+    adsListEl.style.justifyContent = 'center';
 
-        // Atualiza o DOM de uma vez só
-        requestAnimationFrame(() => {
-            adsListEl.innerHTML = html;
-            console.log('Renderização concluída');
+    try {
+        // Cria e adiciona os elementos um por um
+        ads.forEach((ad, index) => {
+            console.log('Renderizando anúncio:', ad.id);
+
+            // Cria os elementos
+            const cardLink = document.createElement('a');
+            cardLink.href = `anuncio.html?id=${ad.id}`;
+            cardLink.style.textDecoration = 'none';
+            cardLink.style.color = 'inherit';
+            cardLink.style.width = '280px';
+            cardLink.style.margin = '10px';
+
+            const card = document.createElement('div');
+            card.style.backgroundColor = '#ffffff';
+            card.style.borderRadius = '8px';
+            card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            card.style.overflow = 'hidden';
+
+            // Imagem
+            const img = document.createElement('img');
+            img.src = ad.imagem_url || 'https://via.placeholder.com/250';
+            img.alt = ad.titulo;
+            img.style.width = '100%';
+            img.style.height = '200px';
+            img.style.objectFit = 'cover';
+
+            // Conteúdo
+            const content = document.createElement('div');
+            content.style.padding = '15px';
+
+            const title = document.createElement('h3');
+            title.textContent = ad.titulo;
+            title.style.marginBottom = '10px';
+
+            const price = document.createElement('p');
+            price.textContent = `R$ ${Number(ad.preco_sugerido).toFixed(2)}`;
+            price.style.fontSize = '1.2em';
+            price.style.fontWeight = 'bold';
+            price.style.color = '#f39c12';
+
+            const author = document.createElement('p');
+            author.textContent = `Anunciado por: ${ad.profiles?.full_name || 'Usuário'}`;
+            author.style.fontSize = '0.9em';
+            author.style.color = '#666';
+            author.style.marginTop = '10px';
+
+            // Monta a estrutura
+            content.appendChild(title);
+            content.appendChild(price);
+            content.appendChild(author);
+            card.appendChild(img);
+            card.appendChild(content);
+            cardLink.appendChild(card);
+            
+            // Adiciona ao container
+            adsListEl.appendChild(cardLink);
         });
+
+        console.log('Renderização concluída');
+        
+        // Debug: Verifica o estado final do elemento
+        console.log('Estado do elemento após renderização:', {
+            childrenCount: adsListEl.children.length,
+            display: window.getComputedStyle(adsListEl).display,
+            visibility: window.getComputedStyle(adsListEl).visibility,
+            opacity: window.getComputedStyle(adsListEl).opacity
+        });
+
     } catch (error) {
         console.error('Erro ao renderizar anúncios:', error);
-        adsListEl.innerHTML = "<p>Erro ao exibir os anúncios. Tente recarregar a página.</p>";
+        adsListEl.textContent = 'Erro ao exibir os anúncios. Tente recarregar a página.';
     }
 }
 
