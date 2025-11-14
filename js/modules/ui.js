@@ -773,6 +773,9 @@ export function renderMyAds(adsListEl, ads) {
                 cursor: pointer;
                 font-size: 0.9em;
             `;
+            editBtn.addEventListener('click', () => {
+                window.location.href = `criar-anuncio.html?edit=${ad.id}`;
+            });
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
@@ -788,6 +791,14 @@ export function renderMyAds(adsListEl, ads) {
                 cursor: pointer;
                 font-size: 0.9em;
             `;
+            deleteBtn.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja excluir este anúncio?')) {
+                    console.log('Excluindo anúncio:', ad.id);
+                    card.style.opacity = '0.5';
+                    card.style.pointerEvents = 'none';
+                    // TODO: Implementar API para exclusão
+                }
+            });
 
             // Monta a estrutura
             actions.appendChild(editBtn);
