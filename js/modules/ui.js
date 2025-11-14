@@ -644,27 +644,179 @@ export function renderUserAds(adsListEl, ads) {
 }
 
 export function renderMyAds(adsListEl, ads) {
-    if (!adsListEl) return;
+    console.log('Iniciando renderMyAds', { adsListEl: !!adsListEl, ads: ads });
 
-    if (ads.length === 0) {
-        adsListEl.innerHTML = "<p>Você ainda não criou nenhum anúncio.</p>";
+    if (!adsListEl) {
+        console.error('adsListEl não encontrado');
         return;
     }
 
-    adsListEl.innerHTML = ads.map(ad => `
-        <div class="ad-card">
-            <img src="${ad.imagem_url || 'https://via.placeholder.com/250'}" alt="${ad.titulo}">
-            <div class="ad-card-content">
-                <h3>${ad.titulo}</h3>
-                <p class="ad-price">R$ ${Number(ad.preco_sugerido).toFixed(2)}</p>
-                <p class="ad-status">Status: <strong>${ad.status}</strong></p>
-                <div class="ad-actions">
-                    <button class="edit-btn" data-id="${ad.id}">Editar</button>
-                    <button class="delete-btn" data-id="${ad.id}">Excluir</button>
-                </div>
-            </div>
-        </div>
-    `).join('');
+    // Limpa o conteúdo anterior
+    adsListEl.textContent = '';
+
+    if (!ads) {
+        console.error('ads é null ou undefined');
+        const errorP = document.createElement('p');
+        errorP.textContent = 'Erro ao carregar os anúncios. Tente recarregar a página.';
+        adsListEl.appendChild(errorP);
+        return;
+    }
+
+    if (ads.length === 0) {
+        console.log('Nenhum anúncio encontrado');
+        const emptyP = document.createElement('p');
+        emptyP.textContent = 'Você ainda não criou nenhum anúncio.';
+        adsListEl.appendChild(emptyP);
+        return;
+    }
+
+    console.log(`Preparando para renderizar ${ads.length} anúncios`);
+
+    // Aplica o estilo do grid
+    adsListEl.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        width: 100%;
+        justify-content: center;
+        align-items: stretch;
+    `;
+
+    try {
+        // Cria e adiciona os elementos um por um
+        ads.forEach((ad, index) => {
+            console.log('Renderizando anúncio:', ad.id);
+
+            const card = document.createElement('div');
+            card.className = 'ad-card';
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            card.style.cssText = `
+                border-radius: 8px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background-color: ${isDarkTheme ? 'rgba(30, 30, 30, 0.6)' : 'var(--surface-color)'};
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid ${isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'var(--border-color)'};
+            `;
+
+            // Imagem
+            const img = document.createElement('img');
+            img.src = ad.imagem_url || 'https://via.placeholder.com/250';
+            img.alt = ad.titulo;
+            img.style.cssText = `
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                display: block;
+            `;
+
+            // Conteúdo
+            const content = document.createElement('div');
+            content.className = 'ad-card-content';
+            content.style.cssText = `
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            `;
+
+            const title = document.createElement('h3');
+            title.textContent = ad.titulo;
+            title.style.cssText = `
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                color: var(--text-color);
+            `;
+
+            const price = document.createElement('p');
+            price.className = 'ad-price';
+            price.textContent = `R$ ${Number(ad.preco_sugerido).toFixed(2)}`;
+            price.style.cssText = `
+                font-size: 1.3em;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 15px;
+            `;
+
+            const status = document.createElement('p');
+            status.className = 'ad-status';
+            status.style.cssText = `
+                margin-bottom: 15px;
+                color: var(--text-secondary-color);
+            `;
+            status.innerHTML = `Status: <strong>${ad.status}</strong>`;
+
+            const actions = document.createElement('div');
+            actions.className = 'ad-actions';
+            actions.style.cssText = `
+                display: flex;
+                gap: 10px;
+                margin-top: auto;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color);
+            `;
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'edit-btn';
+            editBtn.textContent = 'Editar';
+            editBtn.dataset.id = ad.id;
+            editBtn.style.cssText = `
+                flex: 1;
+                padding: 8px 12px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+            `;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = 'Excluir';
+            deleteBtn.dataset.id = ad.id;
+            deleteBtn.style.cssText = `
+                flex: 1;
+                padding: 8px 12px;
+                background-color: var(--error-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+            `;
+
+            // Monta a estrutura
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+            content.appendChild(title);
+            content.appendChild(price);
+            content.appendChild(status);
+            content.appendChild(actions);
+            card.appendChild(img);
+            card.appendChild(content);
+            
+            // Adiciona ao container
+            adsListEl.appendChild(card);
+        });
+
+        console.log('Renderização concluída');
+        
+        // Debug: Verifica o estado final do elemento
+        console.log('Estado do elemento após renderização:', {
+            childrenCount: adsListEl.children.length,
+            display: window.getComputedStyle(adsListEl).display,
+            visibility: window.getComputedStyle(adsListEl).visibility,
+            opacity: window.getComputedStyle(adsListEl).opacity
+        });
+
+    } catch (error) {
+        console.error('Erro ao renderizar anúncios:', error);
+        adsListEl.textContent = 'Erro ao exibir os anúncios. Tente recarregar a página.';
+    }
 }
 
 // Renderiza os detalhes de um único ANÚNCIO do marketplace
