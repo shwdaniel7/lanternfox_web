@@ -651,108 +651,196 @@ export function renderMyAds(adsListEl, ads) {
         return;
     }
 
-    // Limpa o conteúdo anterior
-    adsListEl.innerHTML = '';
+    // Debug: Verifica o estado atual do elemento
+    console.log('Estado do elemento antes da renderização:', {
+        display: window.getComputedStyle(adsListEl).display,
+        visibility: window.getComputedStyle(adsListEl).visibility,
+        opacity: window.getComputedStyle(adsListEl).opacity
+    });
 
+    // Primeiro limpa o conteúdo anterior
+    adsListEl.textContent = '';
+
+    // Verifica se ads é undefined ou null
     if (!ads) {
         console.error('ads é null ou undefined');
-        adsListEl.innerHTML = '<p>Erro ao carregar os anúncios. Tente recarregar a página.</p>';
+        const errorP = document.createElement('p');
+        errorP.textContent = 'Erro ao carregar os anúncios. Tente recarregar a página.';
+        adsListEl.appendChild(errorP);
         return;
     }
 
+    // Verifica se não há anúncios
     if (ads.length === 0) {
         console.log('Nenhum anúncio encontrado');
-        adsListEl.innerHTML = '<p>Você ainda não criou nenhum anúncio.</p>';
+        const emptyP = document.createElement('p');
+        emptyP.textContent = 'Você ainda não criou nenhum anúncio.';
+        adsListEl.appendChild(emptyP);
         return;
     }
 
     console.log(`Preparando para renderizar ${ads.length} anúncios`);
 
+    // Aplica o estilo do grid
+    adsListEl.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        width: 100%;
+        justify-content: center;
+        align-items: stretch;
+    `;
+
     try {
         // Cria e adiciona os elementos um por um
-        ads.forEach((ad) => {
+        ads.forEach((ad, index) => {
             console.log('Renderizando anúncio:', ad.id);
 
-            const cardLink = document.createElement('a');
-            cardLink.href = `anuncio.html?id=${ad.id}`;
-            cardLink.className = 'ad-card-link';
-            cardLink.style.textDecoration = 'none';
-            cardLink.style.color = 'inherit';
+            // Cria os elementos
+            const cardWrapper = document.createElement('div');
+            cardWrapper.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            `;
 
             const card = document.createElement('div');
-            card.className = 'ad-card';
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            card.style.cssText = `
+                border-radius: 8px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                background-color: ${isDarkTheme ? 'rgba(30, 30, 30, 0.6)' : 'var(--surface-color)'};
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid ${isDarkTheme ? 'rgba(255, 255, 255, 0.1)' : 'var(--border-color)'};
+            `;
 
             // Imagem
             const img = document.createElement('img');
             img.src = ad.imagem_url || 'https://via.placeholder.com/250';
             img.alt = ad.titulo;
+            img.style.cssText = `
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                display: block;
+            `;
 
             // Conteúdo
             const content = document.createElement('div');
-            content.className = 'ad-card-content';
+            content.style.cssText = `
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            `;
 
             const title = document.createElement('h3');
             title.textContent = ad.titulo;
+            title.style.cssText = `
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                color: var(--text-color);
+            `;
 
             const price = document.createElement('p');
-            price.className = 'ad-price';
             price.textContent = `R$ ${Number(ad.preco_sugerido).toFixed(2)}`;
+            price.style.cssText = `
+                font-size: 1.3em;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 15px;
+            `;
 
             const status = document.createElement('p');
-            status.className = 'ad-status';
             status.innerHTML = `Status: <strong>${ad.status}</strong>`;
+            status.style.cssText = `
+                font-size: 0.9em;
+                color: var(--text-secondary-color);
+                margin-top: auto;
+                padding-top: 10px;
+                border-top: 1px solid var(--border-color);
+            `;
 
+            // Ações
             const actions = document.createElement('div');
-            actions.className = 'ad-actions';
+            actions.style.cssText = `
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+            `;
 
             const editBtn = document.createElement('button');
-            editBtn.className = 'edit-btn';
             editBtn.textContent = 'Editar';
-            editBtn.dataset.id = ad.id;
             editBtn.type = 'button';
-            editBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            editBtn.style.cssText = `
+                flex: 1;
+                padding: 10px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+                font-weight: 600;
+            `;
+            editBtn.addEventListener('click', () => {
                 window.location.href = `criar-anuncio.html?edit=${ad.id}`;
             });
 
             const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-btn';
             deleteBtn.textContent = 'Excluir';
-            deleteBtn.dataset.id = ad.id;
             deleteBtn.type = 'button';
-            deleteBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            deleteBtn.style.cssText = `
+                flex: 1;
+                padding: 10px;
+                background-color: #e74c3c;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+                font-weight: 600;
+            `;
+            deleteBtn.addEventListener('click', () => {
                 if (confirm('Tem certeza que deseja excluir este anúncio?')) {
                     console.log('Excluindo anúncio:', ad.id);
-                    card.style.opacity = '0.5';
-                    card.style.pointerEvents = 'none';
-                    // TODO: Implementar API para exclusão
+                    cardWrapper.style.opacity = '0.5';
+                    cardWrapper.style.pointerEvents = 'none';
                 }
             });
 
             // Monta a estrutura
-            actions.appendChild(editBtn);
-            actions.appendChild(deleteBtn);
             content.appendChild(title);
             content.appendChild(price);
             content.appendChild(status);
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
             content.appendChild(actions);
             card.appendChild(img);
             card.appendChild(content);
-            cardLink.appendChild(card);
+            cardWrapper.appendChild(card);
             
             // Adiciona ao container
-            adsListEl.appendChild(cardLink);
+            adsListEl.appendChild(cardWrapper);
         });
 
         console.log('Renderização concluída');
-        console.log('Elementos adicionados:', adsListEl.children.length);
+        
+        // Debug: Verifica o estado final do elemento
+        console.log('Estado do elemento após renderização:', {
+            childrenCount: adsListEl.children.length,
+            display: window.getComputedStyle(adsListEl).display,
+            visibility: window.getComputedStyle(adsListEl).visibility,
+            opacity: window.getComputedStyle(adsListEl).opacity
+        });
 
     } catch (error) {
         console.error('Erro ao renderizar anúncios:', error);
-        adsListEl.innerHTML = 'Erro ao exibir os anúncios. Tente recarregar a página.';
+        adsListEl.textContent = 'Erro ao exibir os anúncios. Tente recarregar a página.';
     }
 }
 

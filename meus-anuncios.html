@@ -75,12 +75,16 @@
                     <h2>Meus Anúncios</h2>
                     <a href="criar-anuncio.html" class="button">Criar Novo Anúncio</a>
                 </div>
-                <div id="my-ads-list" class="product-grid">
-                    <!-- Anúncios do usuário serão inseridos aqui -->
+                <div id="my-ads-list" style="width: 100%; min-height: 200px;">
+                    <p style="text-align: center;">Carregando anúncios...</p>
                 </div>
             </section>
         </div>
     </main>
+    <!-- Script para verificar se o elemento foi criado corretamente -->
+    <script>
+        console.log('Elemento my-ads-list presente:', !!document.getElementById('my-ads-list'));
+    </script>
     <div id="toast-container"></div>
     <script type="module" src="js/main.js"></script>
 </body>
