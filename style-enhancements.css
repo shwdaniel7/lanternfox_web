@@ -1,0 +1,326 @@
+/* ==========================================================================
+   UI POLISH ENHANCEMENTS
+   Added smooth transitions, refined shadows, and micro-interactions
+   ========================================================================== */
+
+/* Enhanced Button Styles */
+.button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-secondary {
+    box-shadow: none;
+}
+
+.button-secondary:hover {
+    border-color: var(--text-secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Navigation Links */
+.main-nav a {
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+}
+
+.main-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+/* Enhanced Theme Toggle & Cart Link */
+.theme-toggle,
+.cart-link {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.theme-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+}
+
+.cart-link:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Enhanced Form Inputs */
+.form-layout input,
+.form-layout textarea,
+#search-input,
+#category-filter {
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-layout input:focus,
+.form-layout textarea:focus,
+#search-input:focus,
+#category-filter:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+    outline: none;
+}
+
+/* Enhanced Product Cards */
+.product-card,
+.ad-card {
+    transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.product-card-link,
+.ad-card-link {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@media (hover: hover) {
+
+    .product-card-link:hover,
+    .ad-card-link:hover {
+        transform: translateY(-8px) !important;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .product-card-link:hover .product-card,
+    .ad-card-link:hover .ad-card {
+        border-color: color-mix(in srgb, var(--primary-color) 30%, var(--border-color));
+    }
+}
+
+/* Enhanced Card Images with Zoom Effect */
+.product-card img,
+.ad-card img {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (hover: hover) {
+
+    .product-card-link:hover img,
+    .ad-card-link:hover img {
+        transform: scale(1.05);
+    }
+}
+
+/* Enhanced Department Cards */
+.department-card {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.department-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+.department-card i {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.department-card:hover i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Enhanced Carousel Buttons */
+.carousel-btn {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.carousel-btn:hover {
+    transform: translateY(-50%) scale(1.15) !important;
+}
+
+/* Enhanced Modal */
+.modal-overlay {
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-content {
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Scroll Indicator */
+.scroll-indicator-bar {
+    transition: width 0.1s linear, opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Enhanced Link Hover */
+a {
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced Quantity Controls */
+.quantity-controls .quantity-btn {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quantity-controls .quantity-btn:hover {
+    background-color: var(--border-color);
+    transform: scale(1.1);
+}
+
+/* Enhanced Search Button */
+#search-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#search-button:hover {
+    background-color: var(--primary-color-hover);
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+/* Enhanced Checkout Button */
+#checkout-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#checkout-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
+}
+
+/* Enhanced Mobile Nav Toggle */
+.mobile-nav-toggle {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Enhanced Hero CTA Button */
+.cta-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+.cta-button:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+    color: white;
+}
+
+/* Enhanced Payment Buttons */
+.payment-buttons .button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-buttons .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Remove Buttons */
+.remove-btn,
+.remove-btn-small {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.remove-btn:hover,
+.remove-btn-small:hover {
+    background-color: var(--error-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Enhanced Profile Avatar */
+.profile-avatar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Promotion Badge */
+.promotion-badge {
+    animation: badgePulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        transform: rotate(45deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(45deg) scale(1.05);
+    }
+}
+
+/* Enhanced Google Button */
+.button-google {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-google:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
