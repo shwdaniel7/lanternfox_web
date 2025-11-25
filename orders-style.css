@@ -1,0 +1,260 @@
+/* --- Página Meus Pedidos --- */
+.order-card {
+    margin-bottom: 30px;
+    background: var(--surface-color);
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.order-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.05) 0%, rgba(255, 140, 0, 0.02) 100%);
+    border-bottom: 2px solid var(--border-color);
+    gap: 20px;
+}
+
+.order-header-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.4em;
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.order-date {
+    font-size: 0.95em;
+    color: var(--text-secondary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.order-date::before {
+    content: "📅";
+    font-size: 1.1em;
+}
+
+.order-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 280px;
+}
+
+.order-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-summary-item p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--background-color);
+    border-radius: 6px;
+    font-size: 0.95em;
+}
+
+.order-summary-item.shipping-info {
+    background: rgba(33, 150, 243, 0.05);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #2196F3;
+}
+
+.order-summary-item.shipping-info p {
+    background: transparent;
+    padding: 4px 0;
+}
+
+.shipping-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 6px;
+    padding-left: 8px;
+}
+
+.shipping-details small {
+    color: var(--text-secondary-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+}
+
+.shipping-address {
+    padding-top: 4px;
+    border-top: 1px solid rgba(33, 150, 243, 0.2);
+    margin-top: 4px;
+}
+
+.trade-in-info {
+    background: rgba(76, 175, 80, 0.08) !important;
+    border-left: 3px solid var(--success-color);
+    padding: 12px !important;
+    border-radius: 8px !important;
+    margin: 0;
+}
+
+.trade-in-info span {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.trade-in-info strong {
+    color: var(--success-color);
+    font-size: 1.1em;
+}
+
+.trade-in-info small {
+    display: block;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(76, 175, 80, 0.2);
+    color: var(--text-secondary-color);
+    font-size: 0.85em;
+}
+
+.order-total {
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(255, 140, 0, 0.8) 100%);
+    color: #FFFFFF;
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+}
+
+.order-total span {
+    font-size: 0.9em;
+    color: #FFFFFF;
+    opacity: 1;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.order-total strong {
+    font-size: 1.6em;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #FFFFFF;
+}
+
+.subtotal {
+    margin: 0;
+}
+
+.subtotal span {
+    color: var(--text-secondary-color);
+    font-weight: 600;
+}
+
+.subtotal strong {
+    color: var(--text-color);
+    font-size: 1.1em;
+}
+
+.order-items-list {
+    padding: 25px;
+}
+
+.order-items-list .cart-table-header {
+    padding: 12px 0;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 700;
+    color: var(--text-color);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+
+/* Centraliza a coluna de quantidade (3ª coluna) */
+.order-items-list .cart-table-header>div:nth-child(3) {
+    text-align: center;
+}
+
+.order-items-list .cart-table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+}
+
+/* Centraliza o valor da quantidade (3ª coluna) */
+.order-items-list .cart-table-row>div:nth-child(3) {
+    text-align: center;
+}
+
+.order-items-list .cart-table-row:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .order-card {
+        margin-bottom: 20px;
+    }
+
+    .order-header {
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    .order-summary {
+        min-width: 100%;
+    }
+
+    .order-total {
+        text-align: left;
+    }
+
+    .order-items-list {
+        padding: 15px;
+    }
+
+    .order-items-list .cart-table-header {
+        display: none;
+    }
+
+    .order-items-list .cart-table-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        background: var(--background-color);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
+    }
+
+    .order-items-list .cart-table-row>div {
+        text-align: left;
+    }
+
+    .order-items-list .cart-table-row>div:not(.product-col)::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-secondary-color);
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.85em;
+        text-transform: uppercase;
+    }
+}
