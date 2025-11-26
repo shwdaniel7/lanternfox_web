@@ -151,7 +151,6 @@ img {
 @media (max-width: 600px) {
     .products-section h2 {
         font-size: 1.8em;
-        /* FIX: Reduced font size */
         margin-bottom: 30px;
     }
 }
@@ -191,16 +190,13 @@ textarea:focus-visible {
     align-items: center;
     padding: 20px 0;
     min-height: 85px;
-    /* Garante uma altura mínima */
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    /* Espaço entre a imagem e o texto */
     font-size: 1.5em;
-    /* Controla o tamanho do texto */
     font-weight: 700;
     z-index: 1001;
     margin-right: auto;
@@ -212,24 +208,10 @@ textarea:focus-visible {
     display: block;
 }
 
-/* Opcional: Esconder o texto da logo em telas de celular para economizar espaço */
-@media (max-width: 768px) {
-    .logo-text {
-        display: block;
-        /* FIX: Show logo text */
-        font-size: 0.8em;
-    }
-
-    .logo img {
-        height: 35px;
-        /* FIX: Adjust logo size */
-    }
-}
 
 /* Navegação principal (LOJA, MARKETPLACE, etc.) */
 .main-nav {
     margin: 0 auto;
-    /* TRUQUE: Centraliza a navegação no espaço disponível */
 }
 
 .main-nav .nav-list {
@@ -366,7 +348,6 @@ textarea:focus-visible {
 @media (max-width: 900px) {
     body {
         padding-bottom: 80px;
-        /* Espaço para a barra de ações fixa no rodapé */
     }
 
     .main-nav {
@@ -448,8 +429,6 @@ textarea:focus-visible {
    4. SEÇÕES ESPECÍFICAS (HERO, PRODUTOS, ETC.)
    ========================================================================== */
 
-/* --- Seção Hero (Banner) --- */
-/* Em style.css */
 .hero {
     position: relative;
     display: flex;
@@ -458,7 +437,6 @@ textarea:focus-visible {
     align-items: center;
     text-align: center;
     height: 70vh;
-    /* Ocupará 70% da altura da tela */
     background-image: none;
     padding: 20px;
 }
@@ -470,16 +448,12 @@ textarea:focus-visible {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Garante que o vídeo cubra todo o espaço */
     transform: translate(-50%, -50%);
     z-index: -1;
-    /* Coloca o vídeo atrás do conteúdo */
     filter: brightness(0.4);
-    /* Escurece o vídeo para o texto ficar legível */
 }
 
 .hero-content {
-    /* Garante que o conteúdo fique na frente do vídeo */
     position: relative;
     z-index: 1;
     max-width: 100%;
@@ -505,7 +479,6 @@ textarea:focus-visible {
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    /* FIX: 300px to force 3 columns on desktop */
     gap: 20px;
     justify-content: center;
     padding: 10px;
@@ -573,7 +546,6 @@ textarea:focus-visible {
     .product-card img,
     .ad-card img {
         height: 160px;
-        /* FIX: Reduced image height */
     }
 }
 
@@ -694,7 +666,6 @@ textarea:focus-visible {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 20px;
-    /* Não precisa mais ser sticky, pois está na mesma coluna que o resto */
 }
 
 .stock-info {
@@ -721,12 +692,10 @@ textarea:focus-visible {
 @media (max-width: 768px) {
     .product-detail-grid {
         grid-template-columns: 1fr;
-        /* Coluna única */
     }
 
     .product-detail-image img {
         position: static;
-        /* Remove o sticky em mobile */
     }
 }
 
@@ -864,7 +833,6 @@ textarea:focus-visible {
     border: 1px solid var(--border-color);
     position: sticky;
     top: 150px;
-    /* Altura do header + barra de busca */
 }
 
 #cart-summary h2 {
@@ -892,7 +860,6 @@ textarea:focus-visible {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Remove a margem padrão do <p> para melhor alinhamento */
     margin-bottom: 0;
 }
 
@@ -909,9 +876,7 @@ textarea:focus-visible {
     border-radius: 4px;
     cursor: pointer;
     margin-top: 10px;
-    /* Adiciona um espaço acima do botão */
     width: 100%;
-    /* Faz o botão ocupar a largura toda */
 }
 
 #checkout-button {
@@ -1251,13 +1216,11 @@ textarea:focus-visible {
 @media (max-width: 768px) {
     .profile-layout {
         grid-template-columns: 1fr;
-        /* Coluna única em telas menores */
     }
 }
 
 .profile-edit .form-layout {
     margin: 0;
-    /* Remove a margem automática da classe .form-layout */
 }
 
 /* Estilo para o botão de upload de arquivo */
@@ -1291,13 +1254,11 @@ input[type="file"]::file-selector-button:hover {
 
 .home-section {
     margin-bottom: 80px;
-    /* Espaço entre as seções */
     margin-top: 20px;
 }
 
 .home-section h2 {
     text-align: left;
-    /* Alinha os títulos à esquerda */
     margin-bottom: 30px;
     font-size: 2em;
 }
@@ -1337,12 +1298,9 @@ input[type="file"]::file-selector-button:hover {
     color: var(--primary-color);
 }
 
-/* Regra específica para o título dos departamentos */
 #departments-section h2 {
     text-align: center;
-    /* Centraliza o texto */
     margin-bottom: 40px;
-    /* Aumenta o espaço abaixo */
 }
 
 .original-price-detail {
@@ -1356,9 +1314,7 @@ input[type="file"]::file-selector-button:hover {
     font-size: 2em;
     font-weight: bold;
     color: var(--success-color);
-    /* Verde para destacar a promoção */
     margin-top: -10px;
-    /* Aproxima o preço promocional do original */
 }
 
 .trade-in-disclaimer {
@@ -1383,7 +1339,6 @@ button:disabled {
 .promotion-card {
     border: 2px solid var(--primary-color);
     position: relative;
-    /* Essencial para o posicionamento do badge */
     overflow: hidden;
 }
 
@@ -1391,24 +1346,19 @@ button:disabled {
     position: absolute;
     top: 10px;
     right: -35px;
-    /* Ajuste fino para o posicionamento */
     background-color: var(--primary-color);
     color: white;
     padding: 5px 40px;
-    /* Aumenta a largura */
     font-weight: 700;
     font-size: 0.9em;
     transform: rotate(45deg);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    /* Garante que fique acima da imagem */
 }
 
 .price-container {
     margin-top: auto;
-    /* Empurra os preços para o final do card */
     padding-top: 10px;
-    /* Espaço acima dos preços */
 }
 
 .original-price {
@@ -1435,12 +1385,10 @@ button:disabled {
 
 .carousel-container {
     position: relative;
-    /* Adiciona uma margem negativa para compensar o padding interno e alinhar com o resto do site */
     margin: 0 -10px;
 }
 
 .carousel-track-container {
-    /* ESTA É A MUDANÇA PRINCIPAL: Adicionamos padding para o hover */
     padding: 10px;
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -1449,7 +1397,6 @@ button:disabled {
 .departments-grid {
     display: grid;
     grid-auto-flow: column;
-    /* VOLTAMOS AO TAMANHO FIXO: Cada card terá 200px de largura */
     grid-auto-columns: 200px;
     gap: 20px;
 }
@@ -1781,8 +1728,7 @@ html {
     }
 }
 
-/* --- Correções para o Marketplace --- */
-/* Sobrescreve as animações que podem estar causando problemas */
+/* overwrite nas animação q ta zoando (provavelmente) */
 .product-grid {
     display: grid !important;
     opacity: 1 !important;
